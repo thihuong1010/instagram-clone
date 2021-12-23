@@ -1,6 +1,7 @@
-import {useState } from 'react';
+import {useEffect, useState } from 'react';
 import './App.css';
 import Post from './Post'; 
+import { db } from './firebase';
 
 function App() {
   const [posts, setPosts] = useState([
@@ -26,6 +27,14 @@ function App() {
     }
   ]);
 
+  // UseEffect run a piece of code based on a specific condition
+
+  useEffect( () => {
+    db.collection('posts').onSnapshot(snapshot => {
+      // every time a new post is added,...
+      setPosts(snapshot.docs.map(doc => doc.data()));
+    })
+  }, []); 
 
   return (
     <div className="App">
@@ -36,8 +45,8 @@ function App() {
       <h1>instagram clone by Huong Nguyen</h1>
 
     {
-      posts.map(post => (
-        <Post username={post.username} 
+      posts.map((post, index) => (
+        <Post key={index} username={post.username} 
         caption={post.caption} 
         imageUrl={post.imageUrl}/>
       ))

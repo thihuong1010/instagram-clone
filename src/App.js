@@ -1,7 +1,7 @@
 import {useEffect, useState } from 'react';
 import './App.css';
 import Post from './Post'; 
-import { db } from './firebase';
+import { db, auth } from './firebase';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
@@ -33,6 +33,34 @@ function App() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const unsubcribe = auth.onAuthStateChanged((authUser) => {
+      if (authUser) {
+        // user has logged in ...
+        console.log(authUser);
+        setUser(authUser); 
+
+        if (authUser.displayName) {
+          // dont update username
+        } else {
+          // if someone is created
+          return authUser.updateProfile({
+            displayName: username,
+          });
+        }
+
+      } else {
+        // user has logged out ...
+        setUser(null);
+      }
+    })
+    return () => {
+      // perform some cleanup actions... 
+      unsubcribe();
+    }
+  }, [user, username]);
 
   // UseEffect run a piece of code based on a specific condition
 
@@ -47,7 +75,11 @@ function App() {
   }, []); 
 
   const signUp = (event) => {
-   
+    event.preventDefault();
+  
+    auth
+    .createUserWithEmailAndPassword(email, password)
+    .catch((error) => alert(error.message));
   }
 
   return (
@@ -60,21 +92,23 @@ function App() {
           onClose={handleClose}
         >
           <Box sx={{ ...style, width: 400 }}>
-            <center>
-              <img className="app__headerImage" 
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Instagram_logo.svg/2880px-Instagram_logo.svg.png"
-              alt=""/>
-              <Input type="text" value={username} placeholder="username"
-              onChange={(e) => setUsername(e.target.value)}
-              />
-              <Input type="text" value={email} placeholder="emai"
-              onChange={(e) => setEmail(e.target.value)}
-              />
-              <Input type="text" value={password} placeholder="password"
-              onChange={(e) => setPassword(e.target.value)}
-              />
-              <Button onClick={signUp}>Sign up</Button>
-            </center>
+            <form className="app__signup">
+              <center>
+                <img className="app__headerImage" 
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Instagram_logo.svg/2880px-Instagram_logo.svg.png"
+                alt=""/>
+              </center>  
+                <Input type="text" value={username} placeholder="username"
+                onChange={(e) => setUsername(e.target.value)}
+                />
+                <Input type="text" value={email} placeholder="emai"
+                onChange={(e) => setEmail(e.target.value)}
+                />
+                <Input type="text" value={password} placeholder="password"
+                onChange={(e) => setPassword(e.target.value)}
+                />
+                <Button type="submit" onClick={signUp}>Sign up</Button>
+            </form>
           </Box>
         </Modal>
       </div>

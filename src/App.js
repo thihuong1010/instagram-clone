@@ -30,6 +30,7 @@ function App() {
   const handleClose = () => {
     setOpen(false);
   };
+  const [openSignIn, setOpenSignIn] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
@@ -78,11 +79,29 @@ function App() {
     .catch((error) => alert(error.message));
   }
 
+  const signIn = (event) => {
+    event.preventDefault();
+
+    auth
+    .signInWithEmailAndPassword(email, password)
+    .catch((error) => alert(error.message));
+
+    setOpenSignIn(false);
+  }
+
   return (
     <div className="App">
 
       <div>
-        <Button onClick={handleOpen}>Sign up</Button>
+        { user ? (
+          <Button onClick={() => auth.signOut()}>Log out</Button>
+        ) : (
+          <div className="app__loginContainer">
+            <Button onClick={() => setOpenSignIn(true)}>Sign in</Button>
+            <Button onClick={handleOpen}>Sign up</Button>
+          </div>
+        )
+        }
         <Modal
           open={open}
           onClose={handleClose}
@@ -97,13 +116,35 @@ function App() {
                 <Input type="text" value={username} placeholder="username"
                 onChange={(e) => setUsername(e.target.value)}
                 />
-                <Input type="text" value={email} placeholder="emai"
+                <Input type="text" value={email} placeholder="email"
                 onChange={(e) => setEmail(e.target.value)}
                 />
                 <Input type="text" value={password} placeholder="password"
                 onChange={(e) => setPassword(e.target.value)}
                 />
                 <Button type="submit" onClick={signUp}>Sign up</Button>
+            </form>
+          </Box>
+        </Modal> 
+
+        <Modal
+          open={openSignIn}
+          onClose={() => setOpenSignIn(false)} 
+        >
+          <Box sx={{ ...style, width: 400 }}>
+            <form className="app__signup">
+              <center>
+                <img className="app__headerImage" 
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Instagram_logo.svg/2880px-Instagram_logo.svg.png"
+                alt=""/>
+              </center>  
+                <Input type="text" value={email} placeholder="email"
+                onChange={(e) => setEmail(e.target.value)}
+                />
+                <Input type="text" value={password} placeholder="password"
+                onChange={(e) => setPassword(e.target.value)}
+                />
+                <Button type="submit" onClick={signIn}>Sign in</Button>
             </form>
           </Box>
         </Modal>

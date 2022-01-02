@@ -6,6 +6,7 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import Input from '@material-ui/core/Input';
+import ImageUpload from './ImageUpload';
 
 const style = {
   position: 'absolute',
@@ -57,7 +58,7 @@ function App() {
   // UseEffect run a piece of code based on a specific condition
 
   useEffect( () => {
-    db.collection('posts').onSnapshot(snapshot => {
+    db.collection('posts').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
       // every time a new post is added,...
       setPosts(snapshot.docs.map(doc => ({
         id: doc.id,
@@ -90,9 +91,8 @@ function App() {
   }
 
   return (
-    <div className="App">
-
-      <div>
+    <div className="App"> 
+      <div >
         { user ? (
           <Button onClick={() => auth.signOut()}>Log out</Button>
         ) : (
@@ -164,7 +164,14 @@ function App() {
         imageUrl={post.imageUrl}/>
       ))
     }
+
+      {user?.displayName ? (
+        <ImageUpload username={user.displayName}/>
+      ): (
+        <h4>Sorry you need to login to upload</h4> 
+      )}
     </div>
+    
   );
 }
 

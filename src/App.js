@@ -7,6 +7,7 @@ import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import Input from '@material-ui/core/Input';
 import ImageUpload from './ImageUpload';
+import InstagramEmbed from 'react-instagram-embed';
 
 const style = {
   position: 'absolute',
@@ -93,15 +94,7 @@ function App() {
   return (
     <div className="App"> 
       <div >
-        { user ? (
-          <Button onClick={() => auth.signOut()}>Log out</Button>
-        ) : (
-          <div className="app__loginContainer">
-            <Button onClick={() => setOpenSignIn(true)}>Sign in</Button>
-            <Button onClick={handleOpen}>Sign up</Button>
-          </div>
-        )
-        }
+        
         <Modal
           open={open}
           onClose={handleClose}
@@ -154,16 +147,38 @@ function App() {
         <img className="app__headerImage" 
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Instagram_logo.svg/2880px-Instagram_logo.svg.png"
         alt=""/>
+        { user ? (
+          <Button onClick={() => auth.signOut()}>Log out</Button>
+        ) : (
+          <div className="app__loginContainer">
+            <Button onClick={() => setOpenSignIn(true)}>Sign in</Button>
+            <Button onClick={handleOpen}>Sign up</Button>
+          </div>
+        )
+        }
       </div>
-      <h1>instagram clone by Huong Nguyen</h1>
-
-    {
-      posts.map(({id, post}) => (
-        <Post key={id} username={post.username} 
-        caption={post.caption} 
-        imageUrl={post.imageUrl}/>
-      ))
-    }
+      <div className="app__posts">
+        {
+        posts.map(({id, post}) => (
+          <Post key={id} username={post.username} 
+          caption={post.caption} 
+          imageUrl={post.imageUrl}/>
+        ))
+        }
+      </div>
+      <InstagramEmbed
+        url='https://www.instagram.com/p/CYRVUxnFAFb/'
+        clientAccessToken='440663001042149|67e0c6cef3bb3766b949c32a204b62c4'
+        maxWidth={320}
+        hideCaption={false}
+        containerTagName='div'
+        protocol=''
+        injectScript
+        onLoading={() => {}}
+        onSuccess={() => {}}
+        onAfterRender={() => {}}
+        onFailure={() => {}}
+      />
 
       {user?.displayName ? (
         <ImageUpload username={user.displayName}/>

@@ -7,7 +7,6 @@ import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import Input from '@material-ui/core/Input';
 import ImageUpload from './ImageUpload';
-import InstagramEmbed from 'react-instagram-embed';
 
 const style = {
   position: 'absolute',
@@ -160,30 +159,17 @@ function App() {
       <div className="app__posts">
         {
         posts.map(({id, post}) => (
-          <Post key={id} username={post.username} 
+          <Post key={id} postId={id} user={user} username={post.username} 
           caption={post.caption} 
           imageUrl={post.imageUrl}/>
         ))
         }
       </div>
-      <InstagramEmbed
-        url='https://www.instagram.com/p/CYRVUxnFAFb/'
-        clientAccessToken='440663001042149|67e0c6cef3bb3766b949c32a204b62c4'
-        maxWidth={320}
-        hideCaption={false}
-        containerTagName='div'
-        protocol=''
-        injectScript
-        onLoading={() => {}}
-        onSuccess={() => {}}
-        onAfterRender={() => {}}
-        onFailure={() => {}}
-      />
 
       {user?.displayName ? (
         <ImageUpload username={user.displayName}/>
       ): (
-        <h4>Sorry you need to login to upload</h4> 
+        <h4 className="login__warning">Sorry you need to login to upload</h4> 
       )}
     </div>
     
